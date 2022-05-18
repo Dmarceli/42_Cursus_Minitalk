@@ -27,6 +27,7 @@ void success(int sig)
 {
 	(void)sig;
 	write(1, "\e[0;32mMessage Received!\n\033[0m", 30);
+	exit(EXIT_SUCCESS);
 }
 void	handler(char *server_pid, char *str)
 {
@@ -46,4 +47,6 @@ int	main(int argc, char **argv)
 	if(argc != 3  || ft_isdigit(ft_atoi(argv[1])))
 		ft_error();
 	handler(argv[1], argv[2]);
+	while (1)
+		pause();
 }
