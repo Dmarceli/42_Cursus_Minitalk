@@ -18,7 +18,7 @@ void	send_byte(int pid, char byte)
 			kill(pid, SIGUSR2);
 		else
 			kill(pid, SIGUSR1);
-		usleep(500);
+		usleep(50);
 		i++;
 	}
 	

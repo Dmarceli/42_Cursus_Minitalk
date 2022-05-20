@@ -1,7 +1,45 @@
 #include "minitalk.h"
 #include <stdio.h>
+#include <string.h>
 
-void read_signal(int sig, siginfo_t *siginfo, void *unused)
+char	*ft_strdup_char(char chr)
+{
+	char	*dest;
+
+	dest = malloc(sizeof(char *) * 2);
+	if (dest == NULL)
+		return (NULL);
+	dest[0] = chr;
+	dest[1] = '\0';
+	return (dest);
+}
+
+char	*ft_strjoin_char(char *s1, char s2)
+{
+	int		i;
+	char	*temp;
+	int		len;
+
+	i = 0;
+	if (!s1 || !s2)
+		return (NULL);
+	len = ft_strlen(s1);
+	temp = malloc((len + 2) * sizeof(char));
+	if (temp == NULL)
+		return (NULL);
+	while (s1[i] != '\0')
+	{
+		temp[i] = s1[i];
+		i++;
+	}
+	temp[i] = s2;
+	i++;
+	temp[i] = '\0';
+	return (temp);
+}
+
+
+void handle_signal(int sig, siginfo_t *siginfo, void *unused)
 {
 	(void)unused;
 	static char	letter;
@@ -12,12 +50,10 @@ void read_signal(int sig, siginfo_t *siginfo, void *unused)
 	bit++;
 	if (bit == 8)
 	{
+
 		write(1, &letter, 1);
 		if (letter == '\0')
-		{
-			if (kill(siginfo->si_pid, SIGUSR2) == -1)
-				write(1, "error\n", 7);
-		}
+			kill(siginfo->si_pid, SIGUSR2);
 		letter = 0;
 		bit = 0;
 	}
@@ -29,11 +65,9 @@ int main(void)
 	struct sigaction	sa;
 
 	sa.sa_flags = SA_SIGINFO;
-	sa.sa_sigaction = read_signal;
+	sa.sa_sigaction = handle_signal;
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
-	// signal(SIGUSR1, read_signal);
-	// signal(SIGUSR2, read_signal);
 	write(1,"PID: ", 6);
 	ft_putnbr_fd((int)getpid(),1);
 	write(1,"\n",1);
