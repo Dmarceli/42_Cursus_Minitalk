@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmarceli <dmarceli@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/23 14:18:37 by dmarceli          #+#    #+#             */
+/*   Updated: 2022/05/23 14:27:01 by dmarceli         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minitalk.h"
 
 void	ft_error(void)
@@ -6,10 +18,9 @@ void	ft_error(void)
 	exit(EXIT_SUCCESS);
 }
 
-
 void	send_byte(int pid, char byte)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < 8)
@@ -18,17 +29,18 @@ void	send_byte(int pid, char byte)
 			kill(pid, SIGUSR2);
 		else
 			kill(pid, SIGUSR1);
-		usleep(50);
+		usleep(35);
 		i++;
 	}
-	
 }
-void success(int sig)
+
+void	success(int sig)
 {
 	(void)sig;
 	write(1, "\e[0;32mMessage Received!\n\033[0m", 30);
 	exit(EXIT_SUCCESS);
 }
+
 void	handler(char *server_pid, char *str)
 {
 	int	pid;
@@ -44,7 +56,7 @@ void	handler(char *server_pid, char *str)
 int	main(int argc, char **argv)
 {
 	signal(SIGUSR2, success);
-	if(argc != 3  || ft_isdigit(ft_atoi(argv[1])))
+	if (argc != 3 || ft_isdigit(ft_atoi(argv[1])))
 		ft_error();
 	handler(argv[1], argv[2]);
 	while (1)
